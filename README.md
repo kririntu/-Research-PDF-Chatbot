@@ -110,11 +110,11 @@ Research-Paper-RAG/
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/kririntu/Research-Paper-RAG.git
+git clone https://github.com/kririntu/-Research-PDF-Chatbot.git
 
-cd Research-Paper-RAG
+cd Research-PDF-Chatbot
 
-pip install -r requirements.txt
+pip install -r requirement.txt
 ```
 
 ---
