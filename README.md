@@ -206,17 +206,6 @@ This metadata helps identify the source of retrieved information.
 
 ---
 
-## 📸 Demo
-
-```text
-screenshots/
-├── homepage.png
-├── upload.png
-└── chat.png
-```
-
----
-
 ## 🧩 Design Decisions
 
 - Retrieval-Augmented Generation for document-grounded responses
@@ -245,10 +234,3 @@ screenshots/
 
 ---
 
-## 👨‍💻 Author
-
-**Krishnendu Patra**
-
-Postdoctoral Fellow, IIT Kanpur
-
-**GitHub:** https://github.com/kririntu
