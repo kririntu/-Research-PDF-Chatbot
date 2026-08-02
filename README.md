@@ -1,143 +1,279 @@
-# Research Paper RAG Assistant
+# 📚 Multi-Paper Research Assistant
 
-## Overview
-
-A Retrieval-Augmented Generation (RAG) application built using **LangChain, ChromaDB, HuggingFace Embeddings, Groq LLM, FastAPI, and Streamlit**.
-
-The system allows users to upload one or more research papers and ask questions grounded only in the uploaded documents. It retrieves the most relevant sections from the papers and generates accurate, context-aware answers using a Large Language Model.
+An AI-powered research assistant that allows users to upload multiple research papers (PDFs), ask questions, generate summaries, and understand relationships between papers using Retrieval-Augmented Generation (RAG).
 
 ---
 
-## 🚀 Live Deployment
+## 🚀 Features
 
-- **Frontend (Streamlit):**
-  *Add your Streamlit URL here*
-
-- **Backend (FastAPI):**
-  *Add your Render URL here*
-
----
-
-## ✨ Features
-
-- Multi-PDF research paper support
-- Retrieval-Augmented Generation (RAG)
-- Semantic search using ChromaDB
-- HuggingFace sentence embeddings
-- Short-term conversation memory
-- Source-aware retrieval with paper name and page number
-- Prompt-based hallucination prevention
-- Rejects meaningless or gibberish queries
-- FastAPI backend with Streamlit frontend
+- 📄 Upload multiple research papers (PDF)
+- 🔍 Semantic search using vector embeddings
+- 🤖 Question answering using Llama 3.3 (Groq)
+- 📝 Automatic summarization of uploaded papers
+- 🔗 Finds relationships and common ideas across papers
+- 💬 Maintains short conversation history
+- ⚡ FastAPI backend
+- 🎨 Streamlit frontend
+- 🧠 Retrieval-Augmented Generation (RAG)
 
 ---
 
-## 🧠 Tech Stack
+## 🛠 Tech Stack
 
-- Python
-- LangChain
-- ChromaDB
-- HuggingFace Embeddings
-- Groq Llama 3.3 70B
-- FastAPI
-- Streamlit
-- PyPDFLoader
-- NLTK
+| Component | Technology |
+|-----------|------------|
+| Frontend | Streamlit |
+| Backend | FastAPI |
+| LLM | Groq (Llama-3.3-70B-Versatile) |
+| Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
+| Vector Database | ChromaDB |
+| PDF Loader | LangChain PyPDFLoader |
+| Text Splitter | RecursiveCharacterTextSplitter |
+| Memory | ConversationBufferWindowMemory |
+| Language | Python |
 
 ---
 
-## 🏗️ System Architecture
+# Project Architecture
 
-```text
-               User
-                 │
-                 ▼
-      Streamlit Frontend (pdfchat.py)
-                 │
-                 ▼
-        FastAPI Backend (app.py)
-                 │
-                 ▼
-          Upload Research PDFs
-                 │
-                 ▼
+```
+                 User
+                  │
+                  ▼
+           Streamlit Frontend
+                  │
+                  ▼
+            FastAPI Backend
+                  │
+        Upload Research Papers
+                  │
+                  ▼
             PyPDFLoader
-                 │
-                 ▼
-   RecursiveCharacterTextSplitter
-                 │
-                 ▼
- HuggingFace Embeddings (MiniLM-L6-v2)
-                 │
-                 ▼
-        Chroma Vector Database
-                 │
-                 ▼
-      Top-K Semantic Retrieval
-                 │
-                 ▼
- ConversationBufferWindowMemory
-                 │
-                 ▼
-        Prompt Construction
-                 │
-                 ▼
-      Groq Llama-3.3-70B Model
-                 │
-                 ▼
-        Context-Aware Response
+                  │
+                  ▼
+      Recursive Text Splitter
+                  │
+                  ▼
+     HuggingFace Embeddings
+                  │
+                  ▼
+              ChromaDB
+                  │
+        Semantic Retrieval
+                  │
+                  ▼
+       Conversation History
+                  │
+                  ▼
+      Llama-3.3-70B (Groq)
+                  │
+                  ▼
+        Final Research Answer
 ```
 
 ---
 
-## 📁 Project Structure
+# How It Works
 
-```text
-Research-Paper-RAG/
+### Step 1 — Upload Papers
+
+Users upload **3–4 research papers** in PDF format through the Streamlit interface.
+
+---
+
+### Step 2 — Document Processing
+
+Each paper is
+
+- Loaded using PyPDFLoader
+- Split into chunks
+- Metadata is attached
+  - Paper name
+  - Page number
+
+Example metadata:
+
+```
+Paper: Paper1.pdf
+Page: 5
+```
+
+---
+
+### Step 3 — Embedding Generation
+
+Each chunk is converted into embeddings using
+
+```
+sentence-transformers/all-MiniLM-L6-v2
+```
+
+These embeddings are stored inside **ChromaDB**.
+
+---
+
+### Step 4 — Semantic Retrieval
+
+When a user asks a question,
+
+Example:
+
+> What are the similarities between these papers?
+
+The system retrieves the top 4 most relevant chunks.
+
+---
+
+### Step 5 — Prompt Construction
+
+The retrieved context, conversation history, and user question are combined into a prompt.
+
+```
+Conversation History
+
++
+
+Retrieved Context
+
++
+
+Current Question
+```
+
+---
+
+### Step 6 — LLM Response
+
+The prompt is sent to
+
+```
+Llama-3.3-70B-Versatile
+```
+
+running on Groq.
+
+The model answers **only using the retrieved context**.
+
+---
+
+## Example Questions
+
+### Paper Summary
+
+- Summarize all uploaded papers.
+- Give an overview of the research.
+- What is the main contribution of each paper?
+
+---
+
+### Cross-Paper Comparison
+
+- Compare these papers.
+- What are the similarities?
+- What are the differences?
+- Which paper improves previous work?
+- What problems are solved by each paper?
+
+---
+
+### Research Understanding
+
+- Explain the proposed methodology.
+- What datasets were used?
+- What algorithms are proposed?
+- What limitations are mentioned?
+- What future work is suggested?
+
+---
+
+### General Questions
+
+- Explain Equation (5).
+- What is the main conclusion?
+- Why did the authors choose this method?
+
+---
+
+# Project Structure
+
+```
+Research-Agent/
 │
-├── agent.py
-├── app.py
-├── pdfchat.py
+├── app.py                  # FastAPI backend
+├── researchagent.py        # Research agent
+├── frontend.py             # Streamlit frontend
+├── uploads/                # Uploaded PDFs
 ├── requirements.txt
-├── README.md
-├── docs/
-├── uploads/
-└── screenshots/
+└── README.md
 ```
 
 ---
 
-## ⚙️ Installation
+# Installation
+
+## Clone Repository
 
 ```bash
-git clone https://github.com/kririntu/-Research-PDF-Chatbot.git
+git clone https://github.com/yourusername/research-agent.git
 
-cd Research-PDF-Chatbot
-
-pip install -r requirement.txt
+cd research-agent
 ```
 
 ---
 
-## 🔐 Environment Variables
+## Create Virtual Environment
 
-Create a `.env` file:
+```bash
+python -m venv venv
+```
 
-```text
-GROQ_API_KEY=your_groq_api_key
+Activate
+
+Windows
+
+```bash
+venv\Scripts\activate
+```
+
+Linux
+
+```bash
+source venv/bin/activate
 ```
 
 ---
 
-## ▶️ Run Locally
+## Install Dependencies
 
-### Start Backend (FastAPI)
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Set Groq API Key
+
+Linux
+
+```bash
+export GROQ_API_KEY="YOUR_API_KEY"
+```
+
+Windows
+
+```cmd
+set GROQ_API_KEY=YOUR_API_KEY
+```
+
+---
+
+## Run FastAPI
 
 ```bash
 uvicorn app:app --reload
 ```
 
-Backend runs at:
+Runs at
 
 ```
 http://127.0.0.1:8000
@@ -145,92 +281,104 @@ http://127.0.0.1:8000
 
 ---
 
-### Start Frontend (Streamlit)
+## Run Streamlit
 
 ```bash
-streamlit run pdfchat.py
-```
-
-Frontend runs at:
-
-```
-http://localhost:8501
+streamlit run frontend.py
 ```
 
 ---
 
-## 🔄 RAG Pipeline
+# API Endpoints
 
-1. Upload one or more research papers.
-2. Extract text using **PyPDFLoader**.
-3. Split documents into overlapping chunks.
-4. Generate embeddings using **sentence-transformers/all-MiniLM-L6-v2**.
-5. Store embeddings in **ChromaDB**.
-6. Retrieve the Top-4 most relevant document chunks.
-7. Load recent conversation history.
-8. Construct the prompt.
-9. Generate the final response using **Groq Llama-3.3-70B**.
+## Upload PDFs
+
+```
+POST /uploadfile/
+```
+
+Uploads multiple PDF files and creates the vector database.
 
 ---
 
-## 🛡️ Prompt Guardrails
+## Chat
 
-The assistant follows strict prompt rules to improve response reliability.
+```
+POST /chat
+```
 
-- Answers **only** using the retrieved document context.
-- Does **not** invent or hallucinate information.
-- Rejects meaningless, random, or gibberish inputs.
-- Uses recent conversation history for follow-up questions.
-- Grounds every response in the uploaded research papers.
+Request
 
----
+```json
+{
+    "question":"Summarize the uploaded papers"
+}
+```
 
-## 💬 Conversation Memory
+Response
 
-The application uses **ConversationBufferWindowMemory** with a window size of **3**, allowing users to ask follow-up questions while maintaining contextual continuity without excessive memory usage.
-
----
-
-## 📄 Document Processing
-
-Each uploaded research paper is:
-
-- Loaded using **PyPDFLoader**
-- Split into chunks of **1000 characters**
-- Uses **200-character overlap**
-- Tagged with:
-  - Paper name
-  - Page number
-
-This metadata helps identify the source of retrieved information.
+```json
+{
+    "answer":"..."
+}
+```
 
 ---
 
-## 🧩 Design Decisions
+# Current Pipeline
 
-- Retrieval-Augmented Generation for document-grounded responses
-- ChromaDB for efficient semantic search
-- Lightweight MiniLM embeddings for fast retrieval
-- Groq Llama-3.3-70B for high-quality answer generation
-- Prompt-based hallucination prevention
-- Short-term conversation memory
-- Metadata tracking with paper name and page number
-- Modular architecture separating retrieval, prompting, memory, API, and UI
+```
+Upload PDFs
+      │
+      ▼
+Load Documents
+      │
+      ▼
+Chunk Documents
+      │
+      ▼
+Generate Embeddings
+      │
+      ▼
+Store in ChromaDB
+      │
+      ▼
+Retrieve Relevant Chunks
+      │
+      ▼
+Build Prompt
+      │
+      ▼
+Groq LLM
+      │
+      ▼
+Research Answer
+```
 
 ---
 
-## 🔮 Future Improvements
+# Current Limitations
 
-- Hybrid Search (BM25 + Vector Search)
-- Cross-Encoder Re-ranking
-- Persistent Chroma Database
-- Citation highlighting in responses
-- Multi-agent research assistant
-- Research paper summarization
-- Figure and table understanding
-- OCR support for scanned PDFs
-- Long-term conversation memory
-- Web search integration for unanswered questions
+- Designed for a small collection of papers (approximately 3–4 PDFs).
+- Uses a fixed retrieval size (`k=4`).
+- Conversation memory is limited to the last three exchanges.
+- Responses rely entirely on retrieved content and do not incorporate external knowledge.
 
 ---
 
+# Future Improvements
+
+- Multi-agent research workflow
+- Paper clustering
+- Citation-aware responses
+- Research timeline generation
+- Automatic literature review generation
+- Knowledge graph construction
+- PDF highlighting with source references
+- Support for larger document collections
+- Hybrid retrieval (vector + keyword search)
+
+
+---
+
+## ⭐ If you find this project useful, please consider giving it a star.
